@@ -48,10 +48,7 @@
         }
         .video-box iframe {
             width: 100%; height: 100%; border: none; pointer-events: none;
-        }
-        .video-box .overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: transparent; z-index: 10;
+            position: absolute; top: 0; left: 0;
         }
         .video-box .play-btn {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -60,14 +57,18 @@
             z-index: 5; pointer-events: none;
         }
         
-        .player-full {
-            display: none; background: #000; position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%; z-index: 200;
+        .player-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9998;
+            justify-content: center; align-items: center;
         }
-        .player-full.active { display: block; }
-        .player-full iframe { width: 100%; height: 100%; border: none; }
-        .close-full {
-            position: absolute; top: 15px; right: 15px; z-index: 210;
+        .player-overlay.active { display: flex; }
+        .player-overlay iframe {
+            width: 100%; height: 100%; border: none;
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 15px; z-index: 9999;
             background: #e50914; color: #fff; border: none;
             padding: 10px 20px; border-radius: 5px; font-size: 18px; cursor: pointer;
         }
@@ -93,46 +94,28 @@
         <h2>🔥 SextapeNow</h2>
     </div>
 
-    <!-- GRILLE DE VIDÉOS -->
-    <div class="grid">
+    <!-- GRILLE -->
+    <div class="grid" id="videoGrid">
         
         <!-- VIDÉO 1 -->
-        <div class="video-box" onclick="openFull('player1')">
+        <div class="video-box" data-url="https://www.eporner.com/embed/vRLUPhxIlZI/">
             <iframe src="https://www.eporner.com/embed/vRLUPhxIlZI/" allowfullscreen></iframe>
-            <div class="overlay"></div>
             <div class="play-btn">▶</div>
         </div>
-        <div class="video-box" onclick="openFull('player2')">
-    <iframe width="608" height="1080" src="https://www.eporner.com/embed/e72zuOmEBEe/" frameborder="0" allowfullscreen></iframe>
-    <div class="overlay"></div>
-    <div class="play-btn">▶</div>
-</div>
-<!-- VIDÉO -->
-<div class="video-box" onclick="openFull('player3')">
+        <!-- VIDÉO -->
+<div class="video-box" data-url="LIEN-DE-TA-VIDEO">
     <iframe width="480" height="854" src="https://www.eporner.com/embed/NPI3OAIuMvz/" frameborder="0" allowfullscreen></iframe>
-    <div class="overlay"></div>
     <div class="play-btn">▶</div>
 </div>
-<!-- VIDÉO -->
-<div class="video-box" onclick="openFull('player4')">
-    <iframe width="352" height="640" src="https://www.eporner.com/embed/Sr3sCrAVNoO/" frameborder="0" allowfullscreen></iframe>
-    <div class="overlay"></div>
-    <div class="play-btn">▶</div>
-</div>
-<!-- VIDÉO -->
-<div class="video-box" onclick="openFull('player5')">
-    <iframe src="https://www.eporner.com/embed/xyz789/" allowfullscreen></iframe>
-    <div class="overlay"></div>
-    <div class="play-btn">▶</div>
-</div>
-        <!-- AJOUTE D'AUTRES VIDÉOS ICI EN COPIANT LE BLOC CI-DESSUS -->
+        
+        <!-- AJOUTE TES VIDÉOS ICI -->
         
     </div>
 
     <!-- LECTEUR PLEIN ÉCRAN -->
-    <div class="player-full" id="playerFull">
-        <button class="close-full" onclick="closeFull()">✕ FERMER</button>
-        <div id="playerContent"></div>
+    <div class="player-overlay" id="playerOverlay">
+        <button class="close-btn" onclick="closePlayer()">✕ FERMER</button>
+        <iframe id="playerFrame" src="" allowfullscreen></iframe>
     </div>
 
     <!-- FOOTER -->
@@ -141,23 +124,19 @@
     </div>
 
     <script>
-        function openFull(id) {
-            // Récupérer le code de la vidéo cliquée
-            var videoBox = document.getElementById(id).parentElement;
-            var iframe = videoBox.querySelector('iframe');
-            var src = iframe.getAttribute('src');
+        document.getElementById('videoGrid').addEventListener('click', function(e) {
+            var box = e.target.closest('.video-box');
+            if (!box) return;
             
-            // Créer un nouvel iframe plein écran
-            var fullIframe = '<iframe src="' + src + '" allowfullscreen style="width:100%;height:100%;border:none;"></iframe>';
+            var url = box.getAttribute('data-url');
             
-            // Afficher dans le lecteur plein écran
-            document.getElementById('playerContent').innerHTML = fullIframe;
-            document.getElementById('playerFull').classList.add('active');
-        }
+            document.getElementById('playerFrame').setAttribute('src', url);
+            document.getElementById('playerOverlay').classList.add('active');
+        });
         
-        function closeFull() {
-            document.getElementById('playerFull').classList.remove('active');
-            document.getElementById('playerContent').innerHTML = '';
+        function closePlayer() {
+            document.getElementById('playerOverlay').classList.remove('active');
+            document.getElementById('playerFrame').setAttribute('src', '');
         }
     </script>
 
